@@ -238,11 +238,18 @@ App.directive('cameraStream', function (Api) {
                hls.destroy();
             }
             hls = new Hls(config);
-            hls.loadSource(url);
-            hls.attachMedia(el);
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-               el.play();
-            });
+
+            if (hls.isSupported()) {
+               hls.loadSource(url);
+               hls.attachMedia(el);
+               hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                  el.play();
+               });
+            } else {
+               el.playsInline = 'true';
+               el.autoplay = 'true';
+               el.src = url;
+            }
 
             if (current) {
                $el[0].removeChild(current);
